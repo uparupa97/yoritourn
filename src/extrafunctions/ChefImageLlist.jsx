@@ -26,6 +26,7 @@ function ChefImageList() {
               chefName: data.chefName,
               chefImage: data.chefImage,
               numbering: data.numbering,
+              foodImage: data.foodImage,
             });
           }
         });
@@ -55,7 +56,15 @@ function ChefImageList() {
             ) : (
               <p>이미지가 없습니다.</p>
             )}
-            <p>Image URL: {chef.chefImage}</p>
+            {chef.foodImage ? (
+              <img
+                src={chef.foodImage}
+                alt={chef.chefName}
+                style={{ maxWidth: '200px' }}
+              />
+            ) : (
+              <p>이미지가 없습니다.</p>
+            )}
           </li>
         ))}
       </ul>
