@@ -288,7 +288,7 @@ function UploadButton() {
   ];
 
   const handleClick = async () => {
-    const yorilistRef = collection(db, 'tryyorilist');
+    const yorilistRef = collection(db, 'yorilist');
     try {
       for (const item of data) {
         await addDoc(yorilistRef, item);
