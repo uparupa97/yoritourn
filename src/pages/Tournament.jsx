@@ -3,7 +3,11 @@ import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
 const Tournament = ({userName})=> {
-  const [dish, setDish] = useState(null); 
+  const [currentRound, setCurrentRound] = useState([]); 
+  const [index, setIndex] = useState(0); 
+  const [roundNumber, setRoundNumber] = useState(1); 
+  const [nextRound, setNextRound] = useState([]); 
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,7 +18,7 @@ const Tournament = ({userName})=> {
           dishes.push({ id: doc.id, ...doc.data() });
         });
         const shuffledDishes = dishes.sort(() => Math.random() - 0.5);
-        setDish(shuffledDishes);
+        setCurrentRound(shuffledDishes);
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
@@ -23,15 +27,110 @@ const Tournament = ({userName})=> {
     fetchData();
   }, []);
   
+  const handleSelect = (selectedDish) => { 
+    setNextRound((prev) => [...prev, selectedDish]); 
+    setIndex((prev) => prev + 2); 
+  }
 
-  console.log('shuffledish', dish); 
+  
+  useEffect(() => {
+    if (index >= currentRound.length) {
+      // 현재 라운드의 모든 매치가 끝났을 때
+      if (nextRound.length === 1) {
+        // 최종 우승자가 결정된 경우
+        setCurrentRound(nextRound);
+        setNextRound([]);
+        setIndex(0);
+      } else if (nextRound.length > 0) {
+        // 다음 라운드로 진행
+        let updatedNextRound = [...nextRound];
+        let byeDish = null;
+
+        // 부전승 처리 (요리 수가 홀수인 경우)
+        if (updatedNextRound.length % 2 !== 0) {
+          byeDish = updatedNextRound.pop();  // 부전승 요리 마지막 요리 추출
+        }
+
+        setCurrentRound(updatedNextRound);
+        setNextRound([]);
+
+        // 부전승 요리를 다음 라운드에 미리 추가
+        if (byeDish) {
+          setNextRound([byeDish]);
+        }
+
+        console.log('update', updatedNextRound);
+
+        setIndex(0);
+        setRoundNumber((prev) => prev + 1);
+      }
+    }
+  }, [index, currentRound, nextRound]);
+  
+
+  
+  const currentPair = currentRound.slice(index, index + 2);
 
   
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-     <h2 className='text-2xl text-white'>{userName}님이 뽑은 흑백요리사는?</h2>
-
-    </div>
+    <div className="container flex flex-col items-center justify-center min-h-screen">
+      <h2>{userName}이 뽑은 최고의 요리는?</h2>
+    {currentRound.length > 1 ? (
+      currentPair.length === 2 ? (
+        <div className="text-center">
+          <h2 className="text-2xl font-bold my-4">{roundNumber} 라운드</h2>
+          <div className="flex flex-col justify-center">
+            <div
+              onClick={() => handleSelect(currentPair[0])}
+              className="mx-4 cursor-pointer"
+            >
+              <img
+                src={currentPair[0].foodImage}
+                alt={currentPair[0].dishName}
+                className="w-64 h-64 object-cover rounded-lg shadow-md hover:scale-105 transform transition duration-300"
+              />
+              <p className="mt-2 text-lg font-semibold">
+                {currentPair[0].dishName}
+              </p>
+            </div>
+            <p className='text-gray-100 text-3xl'>VS</p>
+            <div
+              onClick={() => handleSelect(currentPair[1])}
+              className="mx-4 cursor-pointer"
+            >
+              <img
+                src={currentPair[1].foodImage}
+                alt={currentPair[1].dishName}
+                className="w-64 h-64 object-cover rounded-lg shadow-md hover:scale-105 transform transition duration-300"
+              />
+              <p className="mt-2 text-lg font-semibold">
+                {currentPair[1].dishName}
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div>
+        <p className="text-center text-xl">dd</p>
+        </div>
+      )
+    ) : currentRound.length === 1 ? (
+      <div className="text-center">
+        <h1 className="text-3xl font-bold my-4">최종 우승 요리!</h1>
+        <img
+          src={currentRound[0].foodImage}
+          alt={currentRound[0].dishName}
+          className="w-64 h-64 object-cover rounded-lg shadow-md mx-auto"
+        />
+        <p className="mt-4 text-xl font-semibold">
+          {currentRound[0].dishName}
+        </p>
+        <p className="mt-2 text-lg">셰프: {currentRound[0].chefName}</p>
+      </div>
+    ) : (
+      <p className="text-center text-xl">로딩 중...</p>
+    )}
+  </div>
   );
 };
 
