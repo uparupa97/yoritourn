@@ -8,6 +8,8 @@ import ChefImageList from './extrafunctions/ChefImageLlist';
 
 function App() {
   const [userName, setUserName] = useState('');
+  const [winner, setWinner] = useState(null); // 우승자 상태 생성
+
 
 
   return (
@@ -15,8 +17,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Start setUserName={setUserName} />} />
-          <Route path="/tournament" element={<Tournament userName={userName}  />} />
-          <Route path="/result" element={<Result userName={userName} />} />
+          <Route path="/tournament" element={<Tournament userName={userName} setWinner={setWinner}  />} />
+          <Route path="/result" element={<Result userName={userName} winner={winner}/>} />
           <Route path="/chefImage" element={<ChefImageList/>}/>
         </Routes>
       </BrowserRouter>

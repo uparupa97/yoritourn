@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 
-const Tournament = ({userName})=> {
+const Tournament = ({userName, setWinner})=> {
   const [currentRound, setCurrentRound] = useState([]); 
   const [index, setIndex] = useState(0); 
   const [roundNumber, setRoundNumber] = useState(1); 
   const [nextRound, setNextRound] = useState([]); 
+
+  const history = useNavigate(); 
 
 
   useEffect(() => {
@@ -31,6 +34,7 @@ const Tournament = ({userName})=> {
     setNextRound((prev) => [...prev, selectedDish]); 
     setIndex((prev) => prev + 2); 
   }
+  
 
   
   useEffect(() => {
@@ -39,8 +43,10 @@ const Tournament = ({userName})=> {
       if (nextRound.length === 1) {
         // 최종 우승자가 결정된 경우
         setCurrentRound(nextRound);
+        setWinner(nextRound[0]);
         setNextRound([]);
         setIndex(0);
+        history('/result'); 
       } else if (nextRound.length > 0) {
         // 다음 라운드로 진행
         let updatedNextRound = [...nextRound];
