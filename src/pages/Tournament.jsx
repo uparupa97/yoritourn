@@ -74,7 +74,7 @@ const Tournament = ({userName})=> {
   
   return (
     <div className="container flex flex-col items-center justify-center min-h-screen">
-      <h2>{userName}이 뽑은 최고의 요리는?</h2>
+      <h2>{userName}님이 뽑은 최고의 요리는?</h2>
     {currentRound.length > 1 ? (
       currentPair.length === 2 ? (
         <div className="text-center">
@@ -87,13 +87,14 @@ const Tournament = ({userName})=> {
               <img
                 src={currentPair[0].foodImage}
                 alt={currentPair[0].dishName}
-                className="w-64 h-64 object-cover rounded-lg shadow-md hover:scale-105 transform transition duration-300"
+                className="h-60 w-auto object-cover rounded-lg shadow-md hover:scale-105 transform transition duration-300 mx-auto"
               />
               <p className="mt-2 text-lg font-semibold">
                 {currentPair[0].dishName}
               </p>
             </div>
-            <p className='text-gray-100 text-3xl'>VS</p>
+            <p className="text-3xl mt-2 mb-8 bg-gradient-to-r from-gray-200 to-white bg-clip-text text-transparent animate-pulse">
+VS</p>
             <div
               onClick={() => handleSelect(currentPair[1])}
               className="mx-4 cursor-pointer"
@@ -101,7 +102,7 @@ const Tournament = ({userName})=> {
               <img
                 src={currentPair[1].foodImage}
                 alt={currentPair[1].dishName}
-                className="w-64 h-64 object-cover rounded-lg shadow-md hover:scale-105 transform transition duration-300"
+                className="h-60 w-auto object-cover rounded-lg shadow-md hover:scale-105 transform transition duration-300 mx-auto"
               />
               <p className="mt-2 text-lg font-semibold">
                 {currentPair[1].dishName}
@@ -120,11 +121,12 @@ const Tournament = ({userName})=> {
         <img
           src={currentRound[0].foodImage}
           alt={currentRound[0].dishName}
-          className="w-64 h-64 object-cover rounded-lg shadow-md mx-auto"
+          className="h-30 object-cover rounded-lg shadow-md mx-auto"
         />
-        <p className="mt-4 text-xl font-semibold">
+        <p className="mt-2 text-xl font-semibold">
           {currentRound[0].dishName}
         </p>
+        <img src={currentRound[0].chefImage} alt={currentRound[0].chefName} className='h-80 w-auto mt-4 object-cover rounded-lg shadow-md mx-auto'/>
         <p className="mt-2 text-lg">셰프: {currentRound[0].chefName}</p>
       </div>
     ) : (
